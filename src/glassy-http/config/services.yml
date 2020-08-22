@@ -2,7 +2,7 @@ services:
   server_run:
     class: Glassy::HTTP::Command::ServerRunCommand
     kwargs:
-      input: '@console_output'
+      input: '@console_input'
       output: '@console_output'
       container: '@container'
     tag:

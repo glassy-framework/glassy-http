@@ -9,11 +9,17 @@ module Glassy::HTTP::Command
 
     def initialize(input : Input, output : Output, container : Glassy::Kernel::Container)
       @container = container
-      super.initialize(input, output)
+
+      super(input, output)
     end
 
-    def execute
-      container.controller_list.each do |ctrl|
+    @[Option(name: "port", desc: "Listen to port")]
+    def execute(port : Int?)
+      unless port.nil?
+        Kemal.config.port = port
+      end
+
+      @container.controller_list.each do |ctrl|
         ctrl.register_routes
       end
 

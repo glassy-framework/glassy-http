@@ -2,9 +2,11 @@ require "./annotations"
 require "kemal"
 
 module Glassy::HTTP
-  class Controller
+  abstract class Controller
     alias Route = Glassy::HTTP::Annotations::Route
     alias Context = Glassy::HTTP::Annotations::Context
+
+    abstract def register_routes
 
     macro inherited
       macro finished

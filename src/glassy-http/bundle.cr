@@ -1,4 +1,5 @@
 require "glassy-kernel"
+require "./command/server_run_command"
 
 module Glassy::HTTP
   class Bundle < Glassy::Kernel::Bundle
