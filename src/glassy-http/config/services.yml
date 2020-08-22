@@ -1,0 +1,13 @@
+services:
+  server_run:
+    class: Glassy::HTTP::Command::ServerRunCommand
+    kwargs:
+      input: '@console_output'
+      output: '@console_output'
+      container: '@container'
+    tag:
+      - command
+
+tags:
+  controller:
+    restriction: Glassy::HTTP::Controller

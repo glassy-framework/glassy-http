@@ -1,0 +1,25 @@
+name: glassy-http
+version: 0.1.0
+
+authors:
+  - Anderson Danilo <contato@andersondanilo.com>
+
+dependencies:
+  glassy-kernel:
+    github: glassy-framework/glassy-kernel
+    branch: master
+
+  glassy-console:
+    github: glassy-framework/glassy-console
+    branch: master
+
+  kemal:
+    github: kemalcr/kemal
+
+development_dependencies:
+  spec-kemal:
+    github: kemalcr/spec-kemal
+
+crystal: 0.35.1
+
+license: MIT
