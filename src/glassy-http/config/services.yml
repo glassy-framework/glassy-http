@@ -1,13 +1,25 @@
 services:
+  http_error_handler:
+    class: Glassy::HTTP::ErrorHandler
+
+  http_kernel:
+    class: Glassy::HTTP::Kernel
+    kwargs:
+      error_handler: '@http_error_handler'
+
   server_run:
     class: Glassy::HTTP::Command::ServerRunCommand
     kwargs:
       input: '@console_input'
       output: '@console_output'
       container: '@container'
+      http_kernel: '@http_kernel'
     tag:
       - command
 
 tags:
   controller:
     restriction: Glassy::HTTP::Controller
+
+  route_middleware:
+    restriction: Kemal::Handler

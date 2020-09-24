@@ -7,7 +7,12 @@ module Glassy::HTTP::Command
     property name : String = "server:run"
     property description : String = "run HTTP server"
 
-    def initialize(input : Input, output : Output, container : Glassy::Kernel::Container)
+    def initialize(
+      input : Input,
+      output : Output,
+      container : Glassy::Kernel::Container,
+      http_kernel : Glassy::HTTP::Kernel
+    )
       @container = container
 
       super(input, output)
@@ -19,11 +24,8 @@ module Glassy::HTTP::Command
         Kemal.config.port = port
       end
 
-      @container.controller_list.each do |ctrl|
-        ctrl.register_routes
-      end
-
-      Kemal.run
+      http_kernel.register_controllers(@container.controller_list)
+      http_kernel.run
     end
   end
 end
