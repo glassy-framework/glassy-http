@@ -40,7 +40,7 @@ module Glassy::HTTP
 
       middlewares_by_name = @middlewares
         .reject(&.name.nil?)
-        .group_by(&.name.as(String))
+        .group_by(&.name.not_nil!.as(String))
         .transform_values(&.first)
 
       @controllers.each do |controller|

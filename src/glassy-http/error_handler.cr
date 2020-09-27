@@ -1,6 +1,7 @@
 require "http/server"
 require "log"
 require "kemal"
+require "./exceptions/*"
 
 module Glassy::HTTP
   class ErrorHandler < Kemal::Handler
@@ -25,6 +26,8 @@ module Glassy::HTTP
 
     def get_error_message(exception : Exception) : String
       case exception
+      when Glassy::HTTP::Exceptions::HTTPException
+        exception.message || "Error"
       when Kemal::Exceptions::RouteNotFound
         "Not found"
       else
@@ -34,6 +37,8 @@ module Glassy::HTTP
 
     def get_status_code(exception : Exception) : Int32
       case exception
+      when Glassy::HTTP::Exceptions::HTTPException
+        exception.status_code
       when Kemal::Exceptions::RouteNotFound
         404
       else

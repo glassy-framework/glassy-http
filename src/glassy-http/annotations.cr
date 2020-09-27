@@ -4,4 +4,10 @@ module Glassy::HTTP::Annotations
 
   annotation Context
   end
+
+  annotation JSONBody
+  end
+
+  annotation ContentType
+  end
 end

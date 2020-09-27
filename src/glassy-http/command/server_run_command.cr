@@ -10,11 +10,9 @@ module Glassy::HTTP::Command
     def initialize(
       input : Input,
       output : Output,
-      container : Glassy::Kernel::Container,
-      http_kernel : Glassy::HTTP::Kernel
+      @container : Glassy::Kernel::Container,
+      @http_kernel : Glassy::HTTP::Kernel
     )
-      @container = container
-
       super(input, output)
     end
 
@@ -24,8 +22,9 @@ module Glassy::HTTP::Command
         Kemal.config.port = port
       end
 
-      http_kernel.register_controllers(@container.controller_list)
-      http_kernel.run
+      @http_kernel.register_controllers(@container.controller_list)
+      @http_kernel.register_middlewares(@container.route_middleware_list)
+      @http_kernel.run
     end
   end
 end

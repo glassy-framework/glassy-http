@@ -22,4 +22,4 @@ tags:
     restriction: Glassy::HTTP::Controller
 
   route_middleware:
-    restriction: Kemal::Handler
+    restriction: Glassy::HTTP::Middleware
