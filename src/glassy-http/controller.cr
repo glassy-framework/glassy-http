@@ -38,16 +38,45 @@ module Glassy::HTTP
     end
 
     macro inherited
+      generate_inherited_macro
+
       macro finished
+        generate_methods \{{@type}}
+      end
+    end
+
+    macro generate_inherited_macro
+      {% if @type.abstract? %}
+        macro inherited
+          generate_inherited_macro
+
+          macro finished
+            generate_methods \{{@type}}
+          end
+        end
+      {% end %}
+    end
+
+    macro generate_methods(type_path)
+      {% type = type_path.resolve %}
+
+      {% unless type.abstract? %}
         def register_routes(
           http_kernel : Glassy::HTTP::Kernel,
           middlewares_by_name : Hash(String, Glassy::HTTP::Middleware)
         )
-          {% verbatim do %}
-            {% for method in @type.methods %}
+          {% types = [type] %}
+          {% for type_anc in type.ancestors %}
+            {% if type_anc.name =~ /Controller/ %}
+              {% types << type_anc %}
+            {% end %}
+          {% end %}
+
+          {% for type_unit in types %}
+            {% for method in type_unit.methods %}
               {% route_ann = method.annotation(Route) %}
               {% if route_ann %}
-                path = "#{path_prefix}{{route_ann[1].id}}"
+                path = "#{path_prefix}{{route_ann[1].id}}".sub(/(.+)\/$/, "\\1")
                 method = {{route_ann[0]}}
 
                 http_kernel.add_route(method, path) do |ctx|
@@ -114,7 +143,7 @@ module Glassy::HTTP
             {% end %}
           {% end %}
         end
-      end
+      {% end %}
     end
   end
 end
