@@ -22,8 +22,8 @@ module Glassy::HTTP::Command
         Kemal.config.port = port
       end
 
-      @http_kernel.register_controllers(@container.controller_list)
-      @http_kernel.register_middlewares(@container.route_middleware_list)
+      @http_kernel.register_controllers(@container.http_controller_builder_list)
+      @http_kernel.register_middlewares(@container.http_middleware_list)
       @http_kernel.run
     end
   end

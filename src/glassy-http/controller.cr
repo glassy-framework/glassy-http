@@ -9,7 +9,8 @@ module Glassy::HTTP
 
     abstract def register_routes(
       http_kernel : Glassy::HTTP::Kernel,
-      middlewares_by_name : Hash(String, Glassy::HTTP::Middleware)
+      middlewares_by_name : Hash(String, Glassy::HTTP::Middleware),
+      controller_builder : Glassy::Kernel::Builder(self)
     )
 
     def path_prefix : String
@@ -63,7 +64,8 @@ module Glassy::HTTP
       {% unless type.abstract? %}
         def register_routes(
           http_kernel : Glassy::HTTP::Kernel,
-          middlewares_by_name : Hash(String, Glassy::HTTP::Middleware)
+          middlewares_by_name : Hash(String, Glassy::HTTP::Middleware),
+          controller_builder : Glassy::Kernel::Builder(Glassy::HTTP::Controller)
         )
           {% types = [type] %}
           {% for type_anc in type.ancestors %}
@@ -116,7 +118,12 @@ module Glassy::HTTP
                     ctx.response.content_type = {{ann[0]}}
                   {% end %}
 
-                  {{method.name}}({{args.join(", ").id}})
+                  container_ctx = Glassy::Kernel::Context.new
+                  container_ctx.set("locale", ctx.get?("locale").as(String?))
+
+                  controller = controller_builder.make(container_ctx).as({{@type}})
+
+                  controller.{{method.name}}({{args.join(", ").id}})
                 end
 
                 middlewares.each do |middleware_name|

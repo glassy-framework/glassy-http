@@ -1,13 +1,13 @@
 services:
-  http_error_handler:
+  http.error_handler:
     class: Glassy::HTTP::ErrorHandler
 
-  http_kernel:
+  http.kernel:
     class: Glassy::HTTP::Kernel
     kwargs:
       error_handler: '@http_error_handler'
 
-  server_run:
+  http.server_run_command:
     class: Glassy::HTTP::Command::ServerRunCommand
     kwargs:
       input: '@console_input'
@@ -15,11 +15,11 @@ services:
       container: '@container'
       http_kernel: '@http_kernel'
     tag:
-      - command
+      - console.command
 
 tags:
-  controller:
+  http.controller:
     restriction: Glassy::HTTP::Controller
 
-  route_middleware:
+  http.middleware:
     restriction: Glassy::HTTP::Middleware

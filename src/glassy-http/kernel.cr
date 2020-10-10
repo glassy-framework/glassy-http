@@ -9,7 +9,7 @@ module Glassy::HTTP
     @middlewares : Array(Middleware)
 
     def initialize(@error_handler : ErrorHandler)
-      @controllers = [] of Controller
+      @controller_builders = [] of Glassy::Kernel::Builder(Controller)
       @middlewares = [] of Middleware
     end
 
@@ -19,10 +19,8 @@ module Glassy::HTTP
       end
     end
 
-    def register_controllers(controllers : Array(Controller))
-      @controllers = controllers.map do |controller|
-        controller.as(Controller)
-      end
+    def register_controllers(controller_builders : Array(Glassy::Kernel::Builder(Controller)))
+      @controller_builders = controller_builders
     end
 
     def register_middlewares(middlewares : Array(Middleware))
@@ -43,8 +41,10 @@ module Glassy::HTTP
         .group_by(&.name.not_nil!.as(String))
         .transform_values(&.first)
 
-      @controllers.each do |controller|
-        controller.register_routes(self, middlewares_by_name)
+      @controller_builders.each do |controller_builder|
+        sample_controller = controller_builder.make
+
+        sample_controller.register_routes(self, middlewares_by_name, controller_builder)
       end
 
       Kemal.run
