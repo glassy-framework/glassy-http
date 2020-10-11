@@ -78,7 +78,7 @@ module Glassy::HTTP
             {% for method in type_unit.methods %}
               {% route_ann = method.annotation(Route) %}
               {% if route_ann %}
-                path = "#{path_prefix}{{route_ann[1].id}}".sub(/(.+)\/$/, "\\1")
+                path = (path_prefix + {{route_ann[1]}}).sub(/(.+)\/$/, "\\1")
                 method = {{route_ann[0]}}
 
                 http_kernel.add_route(method, path) do |ctx|
