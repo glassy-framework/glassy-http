@@ -87,8 +87,12 @@ end
 
 error_handler = CustomErrorHandler.new
 
+controller_builder = Glassy::Kernel::Builder(Glassy::HTTP::Controller).new(->(ctx : Glassy::Kernel::Context) {
+  MyController.new.as(Glassy::HTTP::Controller)
+})
+
 http_kernel = Glassy::HTTP::Kernel.new(error_handler)
-http_kernel.register_controllers([MyController.new])
+http_kernel.register_controllers([controller_builder])
 http_kernel.register_middlewares([TestMiddleware.new, TestControllerMiddleware.new])
 http_kernel.run
 
