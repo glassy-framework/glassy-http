@@ -136,15 +136,16 @@ module Glassy::HTTP
                 end
 
                 {% if route_ann[:middlewares] %}
-                  {% for middleware in route_ann[:middlewares] %}
-                    middleware = middlewares_by_name[{{middleware}}]?
+                  route_middlewares = {{ route_ann[:middlewares] }}
+                  route_middlewares.each do |middleware_name|
+                    middleware = middlewares_by_name[middleware_name]?
 
                     if middleware
                       middleware.add_only([path], method)
                     else
-                      raise "Middleware {{middleware.id}} is not defined"
+                      raise "Middleware #{middleware_name} is not defined"
                     end
-                  {% end %}
+                  end
                 {% end %}
               {% end %}
             {% end %}
